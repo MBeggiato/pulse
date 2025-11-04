@@ -16,19 +16,36 @@ A lightweight, configurable Docker container monitoring tool with automatic disc
 ### Using Docker (Recommended)
 
 ```bash
-# 1. Clone repository
-git clone https://github.com/MBeggiato/pulse.git
-cd pulse
+# 1. Download the example docker-compose file
+wget https://raw.githubusercontent.com/MBeggiato/pulse/main/docker-compose.example.yml -O docker-compose.yml
 
-# 2. Create your config.json
-cp config.example.json config.json
+# 2. Download example config
+wget https://raw.githubusercontent.com/MBeggiato/pulse/main/config.example.json -O config.json
 # Edit config.json with your settings
 
-# 3. Run with Docker Compose
+# 3. Start Pulse
 docker compose up -d
 
 # View logs
 docker compose logs -f pulse
+
+# Stop
+docker compose down
+```
+
+Or manually create a `docker-compose.yml`:
+
+```yaml
+services:
+  pulse:
+    image: ghcr.io/mbeggiato/pulse:latest
+    container_name: pulse-monitor
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/app/config.json:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - TZ=Europe/Berlin
 ```
 
 ### Using Deno (Native)
@@ -291,7 +308,9 @@ See `sample-container.yml` for more examples.
 
 Pulse can run as a Docker container to monitor other containers on the same host.
 
-### Using Docker Compose (Recommended)
+### Quick Start with Docker Compose
+
+Create a `docker-compose.yml` file:
 
 ```yaml
 services:
@@ -306,6 +325,20 @@ services:
       - TZ=Europe/Berlin
 ```
 
+Then run:
+
+```bash
+# Create your config file
+cp config.example.json config.json
+# Edit config.json with your settings
+
+# Start the container
+docker compose up -d
+
+# View logs
+docker compose logs -f pulse
+```
+
 ### Using Docker Run
 
 ```bash
@@ -318,22 +351,36 @@ docker run -d \
   ghcr.io/mbeggiato/pulse:latest
 ```
 
+### Available Image Tags
+
+- `ghcr.io/mbeggiato/pulse:latest` - Latest build from main branch
+- `ghcr.io/mbeggiato/pulse:main` - Main branch (same as latest)
+- `ghcr.io/mbeggiato/pulse:sha-xxxxxxx` - Specific commit (e.g., `sha-9ab368e`)
+- `ghcr.io/mbeggiato/pulse:v1.0.0` - Tagged releases (when available)
+
 ### Building from Source
 
+If you want to build the image yourself:
+
 ```bash
+# Clone repository
+git clone https://github.com/MBeggiato/pulse.git
+cd pulse
+
 # Build image
 docker build -t pulse:local .
 
-# Run
+# Run with docker-compose.yml (change image to pulse:local)
 docker compose up -d
 ```
 
 ### Important Notes
 
 - **Docker Socket:** The container needs access to `/var/run/docker.sock` to monitor other containers
-- **Config File:** Mount your `config.json` as read-only volume
+- **Config File:** Mount your `config.json` as read-only volume (`:ro` flag)
 - **Network:** Use `network_mode: host` if monitoring containers on different networks
 - **Permissions:** The container runs with minimal permissions (`--allow-read`, `--allow-run=docker`, `--allow-net`)
+- **Timezone:** Set `TZ` environment variable for correct timestamps
 
 ## Internationalization
 

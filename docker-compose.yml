@@ -1,7 +1,10 @@
+# Development docker-compose - builds image from source
+# For production, use docker-compose.example.yml with pre-built image
+
 services:
   pulse:
     build: .
-    container_name: pulse-monitor
+    container_name: pulse-monitor-dev
     restart: unless-stopped
     volumes:
       # Mount config file
@@ -18,5 +21,5 @@ services:
 
 networks:
   monitoring:
-    name: pulse-monitoring
+    name: pulse-monitoring-dev
     driver: bridge
