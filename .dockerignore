@@ -1,0 +1,34 @@
+# Git
+.git
+.gitignore
+
+# Config (use mounted version)
+config.json
+
+# Documentation
+README.md
+sample-container.yml
+
+# Node/Deno
+node_modules
+.deno
+
+# IDE
+.vscode
+.idea
+
+# Logs
+*.log
+logs
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist
+build
+
+# Tests
+*_test.ts
+*.test.ts

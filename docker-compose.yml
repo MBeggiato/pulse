@@ -1,0 +1,22 @@
+services:
+  pulse:
+    build: .
+    container_name: pulse-monitor
+    restart: unless-stopped
+    volumes:
+      # Mount config file
+      - ./config.json:/app/config.json:ro
+      # Mount Docker socket to monitor containers
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      # Optional: Override config via environment variables
+      - TZ=Europe/Berlin
+    # Optional: Use network_mode host to access other containers
+    # network_mode: host
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    name: pulse-monitoring
+    driver: bridge
