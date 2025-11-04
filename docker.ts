@@ -7,7 +7,6 @@ export async function checkDockerContainer(
   try {
     const command = new Deno.Command("docker", {
       args: ["ps", "-q", "-f", `name=${containerName}`],
-      clearEnv: true,
     });
 
     const { stdout } = await command.output();
@@ -34,7 +33,6 @@ export async function discoverContainersWithLabel(
         "--format",
         '{{.Names}}\t{{.Label "' + labelKey + '"}}',
       ],
-      clearEnv: true,
     });
 
     const { stdout } = await command.output();
