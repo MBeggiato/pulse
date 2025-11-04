@@ -1,5 +1,8 @@
 FROM denoland/deno:alpine-2.0.6
 
+# Install Docker CLI to monitor containers
+RUN apk add --no-cache docker-cli
+
 # Set working directory
 WORKDIR /app
 
