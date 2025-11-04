@@ -6,17 +6,17 @@ services:
     image: ghcr.io/mbeggiato/pulse:latest
     container_name: pulse-monitor
     restart: unless-stopped
-    
+
     volumes:
       # Mount your config file (create config.json first!)
       - ./config.json:/app/config.json:ro
-      
+
       # Mount Docker socket to monitor containers
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    
+
     environment:
       # Set your timezone for correct timestamps
       - TZ=Europe/Berlin
-    
+
     # Optional: Uncomment to access containers on all networks
     # network_mode: host
