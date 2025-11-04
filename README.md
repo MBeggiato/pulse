@@ -13,10 +13,33 @@ A lightweight, configurable Docker container monitoring tool with automatic disc
 
 ## Quick Start
 
+### Using Docker (Recommended)
+
+```bash
+# 1. Clone repository
+git clone https://github.com/MBeggiato/pulse.git
+cd pulse
+
+# 2. Create your config.json
+cp config.example.json config.json
+# Edit config.json with your settings
+
+# 3. Run with Docker Compose
+docker compose up -d
+
+# View logs
+docker compose logs -f pulse
+```
+
+### Using Deno (Native)
+
 ```bash
 # Clone repository
-git clone <your-repo>
+git clone https://github.com/MBeggiato/pulse.git
 cd pulse
+
+# Create config
+cp config.example.json config.json
 
 # Run
 deno task start
@@ -263,6 +286,54 @@ services:
 ```
 
 See `sample-container.yml` for more examples.
+
+## Docker Deployment
+
+Pulse can run as a Docker container to monitor other containers on the same host.
+
+### Using Docker Compose (Recommended)
+
+```yaml
+services:
+  pulse:
+    image: ghcr.io/mbeggiato/pulse:latest
+    container_name: pulse-monitor
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/app/config.json:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - TZ=Europe/Berlin
+```
+
+### Using Docker Run
+
+```bash
+docker run -d \
+  --name pulse-monitor \
+  --restart unless-stopped \
+  -v $(pwd)/config.json:/app/config.json:ro \
+  -v /var/run/docker.sock:/var/run/docker.sock:ro \
+  -e TZ=Europe/Berlin \
+  ghcr.io/mbeggiato/pulse:latest
+```
+
+### Building from Source
+
+```bash
+# Build image
+docker build -t pulse:local .
+
+# Run
+docker compose up -d
+```
+
+### Important Notes
+
+- **Docker Socket:** The container needs access to `/var/run/docker.sock` to monitor other containers
+- **Config File:** Mount your `config.json` as read-only volume
+- **Network:** Use `network_mode: host` if monitoring containers on different networks
+- **Permissions:** The container runs with minimal permissions (`--allow-read`, `--allow-run=docker`, `--allow-net`)
 
 ## Internationalization
 
