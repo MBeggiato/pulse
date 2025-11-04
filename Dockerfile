@@ -23,4 +23,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD deno eval "Deno.exit(0)"
 
 # Run the application
-CMD ["deno", "run", "--allow-read=/app", "--allow-run=docker", "--allow-net", "main.ts"]
+CMD ["deno", "run", "--allow-read=/app", "--allow-run=/usr/bin/docker", "--allow-net", "main.ts"]
