@@ -1,0 +1,88 @@
+{
+  "interval": 60,
+  "locale": "de",
+  "dateFormat": "de-DE",
+  "ntfyServer": "https://ntfy.sh",
+  "autoDiscover": {
+    "enabled": false,
+    "labelKey": "pulse.monitor"
+  },
+  "checks": [
+    {
+      "name": "web-server",
+      "notifiers": [
+        {
+          "type": "webhook",
+          "url": "https://uptime.example.com/api/push/KEY?status=up&msg=OK&ping=",
+          "method": "GET",
+          "notifyOn": "always"
+        }
+      ]
+    },
+    {
+      "name": "api-server",
+      "notifiers": [
+        {
+          "type": "webhook",
+          "url": "https://webhook.example.com/container-status",
+          "method": "POST",
+          "headers": {
+            "Authorization": "Bearer YOUR_TOKEN",
+            "X-Custom-Header": "value"
+          },
+          "bodyTemplate": "{\"container\":\"{name}\",\"status\":\"{status}\",\"time\":\"{timestamp}\"}",
+          "notifyOn": "change"
+        }
+      ]
+    },
+    {
+      "name": "worker",
+      "notifiers": [
+        {
+          "type": "ntfy",
+          "topic": "container-alerts",
+          "server": "https://ntfy.sh",
+          "priority": "high",
+          "tags": ["warning", "docker"],
+          "notifyOn": "change"
+        }
+      ]
+    },
+    {
+      "name": "critical-service",
+      "notifiers": [
+        {
+          "type": "webhook",
+          "url": "https://n8n.example.com/webhook/alert",
+          "method": "POST",
+          "notifyOn": "change"
+        },
+        {
+          "type": "ntfy",
+          "topic": "critical-alerts",
+          "priority": "max",
+          "tags": ["rotating_light", "docker", "critical"],
+          "notifyOn": "change"
+        }
+      ]
+    },
+    {
+      "name": "minimal-webhook",
+      "notifiers": [
+        {
+          "type": "webhook",
+          "url": "https://example.com/hook"
+        }
+      ]
+    },
+    {
+      "name": "minimal-ntfy",
+      "notifiers": [
+        {
+          "type": "ntfy",
+          "topic": "my-topic"
+        }
+      ]
+    }
+  ]
+}

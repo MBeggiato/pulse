@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  # Beispiel 1: Einfaches URL-Format (Webhook GET - z.B. Uptime Kuma)
+  # Standard für Webhook: notifyOn = "always"
+  test-web:
+    image: nginx:alpine
+    container_name: test-web
+    restart: unless-stopped
+    ports:
+      - "6969:80"
+    labels:
+      - "pulse.monitor=https://status.mbx.sh/api/push/XlAOZUBtPzgpPeK2nT7mJUXt7CjOFRON?status=up&msg=OK&ping="
+
+  # Beispiel 2: Webhook mit notifyOn = "change"
+  test-web-two:
+    image: nginx:alpine
+    container_name: test-web-two
+    restart: unless-stopped
+    ports:
+      - "6970:80"
+    labels:
+      - 'pulse.monitor={"type":"webhook","url":"https://webhook.example.com/alert","method":"POST","notifyOn":"change"}'
+
+  # Beispiel 3: ntfy mit notifyOn = "change" (Standard für ntfy)
+  database:
+    image: postgres:alpine
+    container_name: my-database
+    restart: unless-stopped
+    labels:
+      - 'pulse.monitor={"type":"ntfy","topic":"db-alerts","priority":"high","tags":["warning","database"],"notifyOn":"change"}'
+
+  # Beispiel 4: Mehrere Notifier - unterschiedliche notifyOn Settings
+  critical-api:
+    image: node:alpine
+    container_name: critical-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    labels:
+      - 'pulse.monitor=[{"type":"webhook","url":"https://uptime.example.com/push/KEY","method":"GET","notifyOn":"always"},{"type":"ntfy","topic":"critical-alerts","priority":"max","tags":["rotating_light","api"],"notifyOn":"change"}]'
