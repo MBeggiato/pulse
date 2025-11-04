@@ -7,6 +7,7 @@ export async function checkDockerContainer(
   try {
     const command = new Deno.Command("docker", {
       args: ["ps", "-q", "-f", `name=${containerName}`],
+      clearEnv: true,
       env: { PATH: Deno.env.get("PATH") || "/usr/local/bin:/usr/bin:/bin" },
     });
 
@@ -34,6 +35,7 @@ export async function discoverContainersWithLabel(
         "--format",
         '{{.Names}}\t{{.Label "' + labelKey + '"}}',
       ],
+      clearEnv: true,
       env: { PATH: Deno.env.get("PATH") || "/usr/local/bin:/usr/bin:/bin" },
     });
 
